@@ -1,14 +1,15 @@
 //SPDX-License-Identifier: unlicensed
 pragma solidity ^0.8.18;
 
-contract patientRecordStorage{
-     
+contract patientRecordStorage{     
    
     struct Doctor{
         string name;
         string qualification;
         string workPlace;
         string specialization;
+        uint256 reviewers;
+        uint256 totalRatingPoints;
         bool exists;
     }
     enum medicine_dosage{
@@ -53,7 +54,7 @@ contract patientRecordStorage{
     mapping (address => Patient) private Patient_Record;
     mapping (address => Doctor) public Doctor_Record;
     mapping (uint256 => Medicine) public Medicine_list;
-    mapping (address => reviewDoctor) public Doctors_Rating;
+    mapping (address => mapping(address => reviewDoctor)) public Doctors_Rating;
     mapping(address => bool) public MedRecordEditor;
 
     modifier onlyPatient{
@@ -88,7 +89,7 @@ contract patientRecordStorage{
     */
     function register_as_doctor(string memory _name, string memory _qualification, string memory _specialization,  string memory _workPlace) public {
         require(!Doctor_Record[msg.sender].exists,"Doctor's data is already associated with this address");
-        Doctor_Record[msg.sender] = Doctor(_name,_qualification,_workPlace, _specialization, true);
+        Doctor_Record[msg.sender] = Doctor(_name,_qualification,_workPlace, _specialization, 0, 0,true);
     }
 
     /**
@@ -181,6 +182,15 @@ contract patientRecordStorage{
         Patient_Record[_toPatient].current_medications[msg.sender][Patient_Record[_toPatient].current_medications[msg.sender].length -1].dosageTiming = _dosetime;
   }
 
+
+  function giveReviewTotheDoctor(address _doctor, uint256 _rate) public onlyPatient{
+      require(Patient_Record[msg.sender].approved_editors[_doctor] && Patient_Record[msg.sender].current_medications[_doctor][0].exists);
+      require(_rate < 5);
+      Doctor_Record[_doctor].totalRatingPoints +=  _rate;
+      Doctor_Record[_doctor].reviewers++;
+      Doctors_Rating[_doctor][msg.sender] = reviewDoctor(_rate);
+  }
+
   function viewPatientDiseaseDetails(address _patient, uint256 _dob, string memory _pname) public view returns(Disease[] memory _d)
   {
      require(Patient_Record[_patient].dateofbirth == _dob && keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
@@ -201,4 +211,9 @@ contract patientRecordStorage{
    function viewDoctorDetails(address _doctor) public view returns (Doctor memory _doc){
    _doc = Doctor_Record[_doctor];
   }
+
+   function viewDoctorRating(address _doctor) public view returns(reviewDoctor){
+       require(Doctor_Record[_doctor].reviewers > 0,"No reviews yet");
+       return reviewDoctor(uint256(Doctor_Record[_doctor].totalRatingPoints)/Doctor_Record[_doctor].reviewers);
+   }
 }
