@@ -181,7 +181,7 @@ contract patientRecordStorage{
         Patient_Record[_toPatient].current_medications[msg.sender][Patient_Record[_toPatient].current_medications[msg.sender].length -1].dosageTiming = _dosetime;
   }
 
-  function viewPatientDiseaseData(address _patient, uint256 _dob, string memory _pname) public view returns(Disease[] memory _d)
+  function viewPatientDiseaseDetails(address _patient, uint256 _dob, string memory _pname) public view returns(Disease[] memory _d)
   {
      require(Patient_Record[_patient].dateofbirth == _dob && keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
      _d = Patient_Record[_patient].disease;
@@ -193,17 +193,12 @@ contract patientRecordStorage{
      _m = Patient_Record[_patient].current_medications[msg.sender];
   }
 
-  function viewMedicineDetails(uint256 _medid) public
+  function viewMedicineDetails(uint256 _medid) public view returns(Medicine memory _m)
   {
-
+     _m = Medicine_list[_medid];
   }
 
-  function viewPrescribedMedicines(address _patient) public onlyApprovedPersons(_patient)
-  {
-
-  }
-
-  function viewDoctorDetails(address _doctor) public{
-
+   function viewDoctorDetails(address _doctor) public view returns (Doctor memory _doc){
+   _doc = Doctor_Record[_doctor];
   }
 }
