@@ -608,7 +608,27 @@
 				"add_Disease(string,address,uint256)": {
 					"params": {
 						"_disease_name": "Name of the disease",
-						"_patient": "address of patient (wallet address is used as unique identification)"
+						"_patient": "address of patient (wallet address is used as unique identification)",
+						"_treatment_status": "patient's recovery or treat status like under treatment"
+					}
+				},
+				"approvePatientRecordEditor(address)": {
+					"params": {
+						"_editor_address": "address to be approved as Patiend Record Editor  "
+					}
+				},
+				"get_Disease_Details_Of_patient(address)": {
+					"params": {
+						"_patient": "patient's wallet address"
+					},
+					"returns": {
+						"_d": "the disease array of Patient_record[<patient's addess>]"
+					}
+				},
+				"giveReviewTotheDoctor(address,uint256)": {
+					"params": {
+						"_doctor": "doctor's wallet address",
+						"_rate": "review point/rating point (input must be in between 0 and 4)"
 					}
 				},
 				"prescribeMedicine(address,uint256,uint8,uint8)": {
@@ -633,6 +653,56 @@
 						"_height": "patient's height in cm",
 						"_name": "Name of the user",
 						"_weight": "patient's weight in kg"
+					}
+				},
+				"update_Recovery_Status(address,uint256,uint256)": {
+					"params": {
+						"_index": "disease array index of a particular disease in patient record",
+						"_patient": "address of patient (wallet address is used as unique identification)",
+						"_treatment_status": "patient's recovery or treat status like under treatment"
+					}
+				},
+				"viewDoctorDetails(address)": {
+					"params": {
+						"_doctor": "Doctor's wallet address"
+					},
+					"returns": {
+						"_doc": "Doctor's details from Doctor structure"
+					}
+				},
+				"viewDoctorRating(address)": {
+					"params": {
+						"_doctor": "Doctor's wallet address"
+					},
+					"returns": {
+						"_0": "reviewDoctor "
+					}
+				},
+				"viewMedicineDetails(uint256)": {
+					"params": {
+						"_medid": "Medicine Id"
+					},
+					"returns": {
+						"_m": "Medicine List array"
+					}
+				},
+				"viewPatientDiseaseDetails(address,uint256,string)": {
+					"params": {
+						"_dob": "patient's date of bith in timestamp",
+						"_patient": "patient's wallet address",
+						"_pname": "patient's name"
+					},
+					"returns": {
+						"_d": "Disease array"
+					}
+				},
+				"viewPatientMedicationsByDoctor(address,string)": {
+					"params": {
+						"_patient": "patient's wallet address",
+						"_pname": "patient's name"
+					},
+					"returns": {
+						"_m": "   array of Medicine"
 					}
 				}
 			},
@@ -671,11 +741,11 @@
 	},
 	"sources": {
 		"contracts/PatientRecordStorage.sol": {
-			"keccak256": "0xb5d0d0e4a71d0ca8c4ff06db1d963e7f6553efe4aa47e13a960206c2813fc9a6",
+			"keccak256": "0x27d96d5d53c6806829514f492b60d9eaaf01b9e6ca258e9db8598d44ec73d1f6",
 			"license": "unlicensed",
 			"urls": [
-				"bzz-raw://5d4e99cea9891a686e478545aecff09cc2d1b022c9f1f5879a62ffbaef94d6dd",
-				"dweb:/ipfs/QmULfHoxqzDCpchCqtEbAEtBJcjqSyhZpMKjqyH6C4GfHy"
+				"bzz-raw://d5cf142a602f237b3bd376ce02c74b533d0e3bf8f6c83541c6d17c5856a8cea3",
+				"dweb:/ipfs/QmcYjDY7qz6x3vc9Dc8ZAPTFhvmmVutGUcBtpuRk35B4uE"
 			]
 		}
 	},
