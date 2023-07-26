@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 contract patientRecordStorage{     
    
+   address public owner;
     /// Doctor struct stores Doctor's Details
     /// reviewers store total number reviewers, everytime someone give review , reviewers increment by 1 
     /// Total rating point is the sum of all rating accumulated by the doctor
@@ -29,6 +30,8 @@ contract patientRecordStorage{
     /// Generic Medicine Details with recommended dosage and timings
     struct Medicine{
         string name;
+        string brand;
+        string composition;
         bool continue_status;
         medicine_dosage dosage;
         medicine_timing dosageTiming;
@@ -44,7 +47,8 @@ contract patientRecordStorage{
         Disease[] disease;
         Medicine[] allergic_to; //list of medicines the patient is allergic to 
         mapping (address => bool) approved_editors; //If a person is approved to change few records of Patient
-        mapping (address => Medicine[]) current_medications; //which doctor prescribed which medicine lists 
+        mapping (address => mapping(uint256 => Medicine)) medications; //which doctor prescribed which medicine mapping 
+        uint256[] medication_list; //all medicine
         bool exists;
     }
 
@@ -69,6 +73,11 @@ contract patientRecordStorage{
     mapping (address => mapping(address => reviewDoctor)) public Doctors_Rating; //Doctors_Rating: key is doctor's address and value is another mapping with key Patient's address with value reviewDoctor rating(0-4)
     mapping(address => bool) public MedRecordEditor; //MedRecordEditor: key is User's address and value is true/false 
 
+    modifier onlyOwner{
+        require(msg.sender == owner,"Only Owner can execute");
+        _;
+    } 
+
     /// onlyPatient modifier will be used with functions which only a patient himself can execute
     modifier onlyPatient{
         require(Patient_Record[msg.sender].exists,"Only the patient can change by ownself");
@@ -91,12 +100,13 @@ contract patientRecordStorage{
     /// medicine recored can be added to medicines by only medrecordeditor
     /// by default contract owner is medrecordeditor and owner can add more editors
     modifier _medRecordEditor(){
-        require(MedRecordEditor[msg.sender]);
+        require(MedRecordEditor[msg.sender],"Either Contract Owner or allowed user can edit Medicine");
         _;
     }
 
     // Contract owner by default can add Medicines to medicine list as approved as MedrecordEditor
  constructor(){
+     owner = msg.sender;
      MedRecordEditor[msg.sender] = true; 
  }
     /**  
@@ -191,35 +201,105 @@ contract patientRecordStorage{
     /**  
         @param _id Id of the medicine
         @param _name name of the medicine
+        @param _brand brand name of the medicine
+        @param _composition composition of the medicine
        @param _dose a recommended Dose prescribed to the patient (In general)
        @param _dosetime recommended Dose time prescribed to patient (In general)
     */
-  function addMedicine(uint256 _id, string memory _name, medicine_dosage _dose, medicine_timing _dosetime) public _medRecordEditor
+  function addMedicine(uint256 _id, string memory _name, string memory _brand, string memory _composition, medicine_dosage _dose, medicine_timing _dosetime) public _medRecordEditor
   {
-      Medicine_list[_id] = Medicine(_name,false, _dose,_dosetime,true);
+      Medicine_list[_id] = Medicine(_name, _brand, _composition, false, _dose,_dosetime,true);
   }
 
+/**
+     @param _addr Medicine editor
+
+*/
+  function approveAddressAsMedicineEditor(address _addr) public onlyOwner{
+      MedRecordEditor[_addr] = true;
+  }
+
+/**
+    @param _addr  wallet address of medicine editor
+*/
+  function disApproveAddressAsMedicineEditor(address _addr) public onlyOwner{
+      MedRecordEditor[_addr] = false;
+  }
+
+/**
+     @param _medid  Medicine Id
+     @param _oldname Medicine's oldname
+     @param _newname Medicine's new name   
+*/
+
+  function editMedicineName(uint256 _medid,string memory _oldname, string memory _newname) public _medRecordEditor
+  {
+      require(Medicine_list[_medid].exists && keccak256(abi.encodePacked(Medicine_list[_medid].name))  == keccak256(abi.encodePacked(_oldname )),"Medicine not found");
+      Medicine_list[_medid].name = _newname;
+   }
+
+/**
+     @param _medid  Medicine Id
+     @param _name Medicine's name
+     @param _newbrandname Medicine's new brand name
+*/
+  function editMedicineBrandName(uint256 _medid,string memory _name, string memory _newbrandname) public _medRecordEditor
+  {
+      require(Medicine_list[_medid].exists && keccak256(abi.encodePacked(Medicine_list[_medid].name))  == keccak256(abi.encodePacked(_name )),"Medicine not found");
+      Medicine_list[_medid].brand = _newbrandname;
+   } 
+
+/**
+     @param _medid  Medicine Id
+     @param _name Medicine's name
+     @param _newcomposition Medicine's new composition details
+*/
+
+   function editMedicineComposition(uint256 _medid,string memory _name, string memory _newcomposition) public _medRecordEditor
+  {
+      require(Medicine_list[_medid].exists && keccak256(abi.encodePacked(Medicine_list[_medid].name))  == keccak256(abi.encodePacked(_name )),"Medicine not found");
+      Medicine_list[_medid].composition = _newcomposition;
+   }
 
 /**
   @param _toPatient  prescribed to which patient
   @param _medid      medicine id
+  @param _medname    medicine name
   @param _dose       prescribed dosage  
   @param _dosetime   prescribed dose timings
 */
-  function prescribeMedicine(address _toPatient,uint256 _medid, medicine_dosage _dose, medicine_timing _dosetime) public onlyDoctor onlyApprovedPersons(_toPatient){
-        Patient_Record[_toPatient].current_medications[msg.sender].push(Medicine_list[_medid]);
-        Patient_Record[_toPatient].current_medications[msg.sender][Patient_Record[_toPatient].current_medications[msg.sender].length -1].dosage = _dose;
-        Patient_Record[_toPatient].current_medications[msg.sender][Patient_Record[_toPatient].current_medications[msg.sender].length -1].dosageTiming = _dosetime;
+  function prescribeMedicine(address _toPatient,uint256 _medid, string memory _medname, medicine_dosage _dose, medicine_timing _dosetime) public onlyDoctor onlyApprovedPersons(_toPatient){
+        require(Medicine_list[_medid].exists && keccak256(abi.encodePacked(Medicine_list[_medid].name))  == keccak256(abi.encodePacked(_medname )),"Medicine not found");
+        Patient_Record[_toPatient].medications[msg.sender][_medid]= Medicine_list[_medid];
+        Patient_Record[_toPatient].medications[msg.sender][_medid].dosage = _dose;
+        Patient_Record[_toPatient].medications[msg.sender][_medid].dosageTiming = _dosetime;
+        Patient_Record[_toPatient].medications[msg.sender][_medid].continue_status = true;
+        Patient_Record[_toPatient].medication_list.push(_medid);
+
   }
 
 /**
+    @param _toPatient Patient's awallet adress
+    @param _medid medicine id
+    @param  _medname medicine name
+
+*/
+
+   function discontinueMedicine(address _toPatient,uint256 _medid, string memory _medname) public onlyDoctor onlyApprovedPersons(_toPatient){
+       require(Medicine_list[_medid].exists && keccak256(abi.encodePacked(Medicine_list[_medid].name))  == keccak256(abi.encodePacked(_medname )));
+       Patient_Record[_toPatient].medications[msg.sender][_medid].continue_status = false; 
+   }
+
+/**
     @param _doctor doctor's wallet address
+    @param _anymedid_prescribed_by_this_doc provide a medicine id which has been prescribed by the doctor
+    // The above information is necessary because only those patients can give review who have been treated by the doctor
     @param _rate review point/rating point (input must be in between 0 and 4)
 
 */
 
-  function giveReviewTotheDoctor(address _doctor, uint256 _rate) public onlyPatient{
-      require(Patient_Record[msg.sender].approved_editors[_doctor] && Patient_Record[msg.sender].current_medications[_doctor][0].exists);
+  function giveReviewTotheDoctor(address _doctor, uint256 _anymedid_prescribed_by_this_doc, uint256 _rate) public onlyPatient{
+      require(Patient_Record[msg.sender].approved_editors[_doctor] && Patient_Record[msg.sender].medications[_doctor][_anymedid_prescribed_by_this_doc].exists,"The doctor never prescribed any medicine to this patient");
       require(_rate < 5);
       Doctor_Record[_doctor].totalRatingPoints +=  _rate;
       Doctor_Record[_doctor].reviewers++;
@@ -236,7 +316,7 @@ contract patientRecordStorage{
 */
   function viewPatientDiseaseDetails(address _patient, uint256 _dob, string memory _pname) public view returns(Disease[] memory _d)
   {
-     require(Patient_Record[_patient].dateofbirth == _dob && keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
+     require(Patient_Record[_patient].dateofbirth == _dob && keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)),"Input data incorrect");
      _d = Patient_Record[_patient].disease;
   }
 
@@ -247,10 +327,24 @@ contract patientRecordStorage{
   @return _m    array of Medicine
 
 */
-  function viewPatientMedicationsByDoctor(address _patient, string memory _pname) public view onlyDoctor onlyApprovedPersons(_patient) returns(Medicine[] memory _m)
+  function viewPatientMedicationsByDoctor(address _patient, string memory _pname, uint256 _medid) public view onlyDoctor onlyApprovedPersons(_patient) returns(Medicine memory _m)
+  {
+      require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)),"Input data incorrect");
+      require(Patient_Record[_patient].medications[msg.sender][_medid].exists,"This medication not available");  
+     _m = Patient_Record[_patient].medications[msg.sender][_medid];
+  }
+
+  /**
+  * View specific medication details
+  @param _patient patient's wallet address
+  @param _pname patient's name
+  @return _m    array of Medicine
+
+*/
+  function viewSpecificPatientMedicationsByDoctor(address _patient, string memory _pname) public view onlyDoctor onlyApprovedPersons(_patient) returns(uint256[] memory _m)
   {
       require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
-     _m = Patient_Record[_patient].current_medications[msg.sender];
+     _m = Patient_Record[_patient].medication_list;
   }
 
 /**
