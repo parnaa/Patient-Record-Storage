@@ -118,6 +118,16 @@
 						"type": "string"
 					},
 					{
+						"internalType": "string",
+						"name": "brand",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "composition",
+						"type": "string"
+					},
+					{
 						"internalType": "bool",
 						"name": "continue_status",
 						"type": "bool"
@@ -151,6 +161,16 @@
 					{
 						"internalType": "string",
 						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_brand",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_composition",
 						"type": "string"
 					},
 					{
@@ -202,6 +222,19 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "approveAddressAsMedicineEditor",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "_editor_address",
 						"type": "address"
 					}
@@ -215,11 +248,116 @@
 				"inputs": [
 					{
 						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "disApproveAddressAsMedicineEditor",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
 						"name": "_editor_address",
 						"type": "address"
 					}
 				],
 				"name": "disapprovePatientRecordEditor",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_toPatient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_medid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_medname",
+						"type": "string"
+					}
+				],
+				"name": "discontinueMedicine",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_medid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_newbrandname",
+						"type": "string"
+					}
+				],
+				"name": "editMedicineBrandName",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_medid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_newcomposition",
+						"type": "string"
+					}
+				],
+				"name": "editMedicineComposition",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_medid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_oldname",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_newname",
+						"type": "string"
+					}
+				],
+				"name": "editMedicineName",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -264,6 +402,11 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "_anymedid_prescribed_by_this_doc",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "_rate",
 						"type": "uint256"
 					}
@@ -271,6 +414,19 @@
 				"name": "giveReviewTotheDoctor",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -284,6 +440,11 @@
 						"internalType": "uint256",
 						"name": "_medid",
 						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_medname",
+						"type": "string"
 					},
 					{
 						"internalType": "enum patientRecordStorage.medicine_dosage",
@@ -473,6 +634,16 @@
 								"type": "string"
 							},
 							{
+								"internalType": "string",
+								"name": "brand",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "composition",
+								"type": "string"
+							},
+							{
 								"internalType": "bool",
 								"name": "continue_status",
 								"type": "bool"
@@ -553,6 +724,11 @@
 						"internalType": "string",
 						"name": "_pname",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_medid",
+						"type": "uint256"
 					}
 				],
 				"name": "viewPatientMedicationsByDoctor",
@@ -562,6 +738,16 @@
 							{
 								"internalType": "string",
 								"name": "name",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "brand",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "composition",
 								"type": "string"
 							},
 							{
@@ -585,9 +771,33 @@
 								"type": "bool"
 							}
 						],
-						"internalType": "struct patientRecordStorage.Medicine[]",
+						"internalType": "struct patientRecordStorage.Medicine",
 						"name": "_m",
-						"type": "tuple[]"
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_patient",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_pname",
+						"type": "string"
+					}
+				],
+				"name": "viewSpecificPatientMedicationsByDoctor",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_m",
+						"type": "uint256[]"
 					}
 				],
 				"stateMutability": "view",
@@ -597,8 +807,10 @@
 		"devdoc": {
 			"kind": "dev",
 			"methods": {
-				"addMedicine(uint256,string,uint8,uint8)": {
+				"addMedicine(uint256,string,string,string,uint8,uint8)": {
 					"params": {
+						"_brand": "brand name of the medicine",
+						"_composition": "composition of the medicine",
 						"_dose": "a recommended Dose prescribed to the patient (In general)",
 						"_dosetime": "recommended Dose time prescribed to patient (In general)",
 						"_id": "Id of the medicine",
@@ -612,9 +824,47 @@
 						"_treatment_status": "patient's recovery or treat status like under treatment"
 					}
 				},
+				"approveAddressAsMedicineEditor(address)": {
+					"params": {
+						"_addr": "Medicine editor"
+					}
+				},
 				"approvePatientRecordEditor(address)": {
 					"params": {
 						"_editor_address": "address to be approved as Patiend Record Editor  "
+					}
+				},
+				"disApproveAddressAsMedicineEditor(address)": {
+					"params": {
+						"_addr": "wallet address of medicine editor"
+					}
+				},
+				"discontinueMedicine(address,uint256,string)": {
+					"params": {
+						"_medid": "medicine id",
+						"_medname": "medicine name",
+						"_toPatient": "Patient's awallet adress"
+					}
+				},
+				"editMedicineBrandName(uint256,string,string)": {
+					"params": {
+						"_medid": "Medicine Id",
+						"_name": "Medicine's name",
+						"_newbrandname": "Medicine's new brand name"
+					}
+				},
+				"editMedicineComposition(uint256,string,string)": {
+					"params": {
+						"_medid": "Medicine Id",
+						"_name": "Medicine's name",
+						"_newcomposition": "Medicine's new composition details"
+					}
+				},
+				"editMedicineName(uint256,string,string)": {
+					"params": {
+						"_medid": "Medicine Id",
+						"_newname": "Medicine's new name   ",
+						"_oldname": "Medicine's oldname"
 					}
 				},
 				"get_Disease_Details_Of_patient(address)": {
@@ -625,17 +875,19 @@
 						"_d": "the disease array of Patient_record[<patient's addess>]"
 					}
 				},
-				"giveReviewTotheDoctor(address,uint256)": {
+				"giveReviewTotheDoctor(address,uint256,uint256)": {
 					"params": {
+						"_anymedid_prescribed_by_this_doc": "provide a medicine id which has been prescribed by the doctor // The above information is necessary because only those patients can give review who have been treated by the doctor",
 						"_doctor": "doctor's wallet address",
 						"_rate": "review point/rating point (input must be in between 0 and 4)"
 					}
 				},
-				"prescribeMedicine(address,uint256,uint8,uint8)": {
+				"prescribeMedicine(address,uint256,string,uint8,uint8)": {
 					"params": {
 						"_dose": "prescribed dosage  ",
 						"_dosetime": "prescribed dose timings",
 						"_medid": "medicine id",
+						"_medname": "medicine name",
 						"_toPatient": "prescribed to which patient"
 					}
 				},
@@ -696,7 +948,16 @@
 						"_d": "Disease array"
 					}
 				},
-				"viewPatientMedicationsByDoctor(address,string)": {
+				"viewPatientMedicationsByDoctor(address,string,uint256)": {
+					"params": {
+						"_patient": "patient's wallet address",
+						"_pname": "patient's name"
+					},
+					"returns": {
+						"_m": "   array of Medicine"
+					}
+				},
+				"viewSpecificPatientMedicationsByDoctor(address,string)": {
 					"params": {
 						"_patient": "patient's wallet address",
 						"_pname": "patient's name"
@@ -719,6 +980,9 @@
 				},
 				"register_as_patient(string,uint256,uint256,uint256)": {
 					"notice": "This function is used to register a new patient to the ledger"
+				},
+				"viewSpecificPatientMedicationsByDoctor(address,string)": {
+					"notice": "View specific medication details"
 				}
 			},
 			"version": 1
@@ -741,11 +1005,11 @@
 	},
 	"sources": {
 		"contracts/PatientRecordStorage.sol": {
-			"keccak256": "0x27d96d5d53c6806829514f492b60d9eaaf01b9e6ca258e9db8598d44ec73d1f6",
+			"keccak256": "0xc079e9cf02b7dfb7013ce9beab399387adab9c8dd33448cda23ee1df98cfae9a",
 			"license": "unlicensed",
 			"urls": [
-				"bzz-raw://d5cf142a602f237b3bd376ce02c74b533d0e3bf8f6c83541c6d17c5856a8cea3",
-				"dweb:/ipfs/QmcYjDY7qz6x3vc9Dc8ZAPTFhvmmVutGUcBtpuRk35B4uE"
+				"bzz-raw://816080d09cb9d4b59810ac2255fdd37f57c41a73e810194a85e7ea80f2dec6ff",
+				"dweb:/ipfs/QmXbiCrMP7Yx1kY9ESfKfVx1mjczHJnmCtYxAqJsQuRpHt"
 			]
 		}
 	},
