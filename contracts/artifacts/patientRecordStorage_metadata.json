@@ -724,6 +724,30 @@
 						"internalType": "string",
 						"name": "_pname",
 						"type": "string"
+					}
+				],
+				"name": "viewPatientMedications",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_m",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_patient",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_pname",
+						"type": "string"
 					},
 					{
 						"internalType": "uint256",
@@ -731,7 +755,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "viewPatientMedicationsByDoctor",
+				"name": "viewSpecificPatientMedication",
 				"outputs": [
 					{
 						"components": [
@@ -774,30 +798,6 @@
 						"internalType": "struct patientRecordStorage.Medicine",
 						"name": "_m",
 						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_patient",
-						"type": "address"
-					},
-					{
-						"internalType": "string",
-						"name": "_pname",
-						"type": "string"
-					}
-				],
-				"name": "viewSpecificPatientMedicationsByDoctor",
-				"outputs": [
-					{
-						"internalType": "uint256[]",
-						"name": "_m",
-						"type": "uint256[]"
 					}
 				],
 				"stateMutability": "view",
@@ -948,16 +948,16 @@
 						"_d": "Disease array"
 					}
 				},
-				"viewPatientMedicationsByDoctor(address,string,uint256)": {
+				"viewPatientMedications(address,string)": {
 					"params": {
 						"_patient": "patient's wallet address",
 						"_pname": "patient's name"
 					},
 					"returns": {
-						"_m": "   array of Medicine"
+						"_m": "   array of Medicine Ids"
 					}
 				},
-				"viewSpecificPatientMedicationsByDoctor(address,string)": {
+				"viewSpecificPatientMedication(address,string,uint256)": {
 					"params": {
 						"_patient": "patient's wallet address",
 						"_pname": "patient's name"
@@ -981,7 +981,7 @@
 				"register_as_patient(string,uint256,uint256,uint256)": {
 					"notice": "This function is used to register a new patient to the ledger"
 				},
-				"viewSpecificPatientMedicationsByDoctor(address,string)": {
+				"viewSpecificPatientMedication(address,string,uint256)": {
 					"notice": "View specific medication details"
 				}
 			},
@@ -1005,11 +1005,11 @@
 	},
 	"sources": {
 		"contracts/PatientRecordStorage.sol": {
-			"keccak256": "0xc079e9cf02b7dfb7013ce9beab399387adab9c8dd33448cda23ee1df98cfae9a",
+			"keccak256": "0xbc9c378acb26eb841a6b58806b30ed25bfed8040409a54562981c0e16eb6c3d1",
 			"license": "unlicensed",
 			"urls": [
-				"bzz-raw://816080d09cb9d4b59810ac2255fdd37f57c41a73e810194a85e7ea80f2dec6ff",
-				"dweb:/ipfs/QmXbiCrMP7Yx1kY9ESfKfVx1mjczHJnmCtYxAqJsQuRpHt"
+				"bzz-raw://fde430546a01cb82820f21ee55359eec1ff271ec244ab0b853632b44b52db7eb",
+				"dweb:/ipfs/Qmb9RPnqjabbmHLXwCqYLXZt8aDwzb8juVZkyuWF7LmTP3"
 			]
 		}
 	},
