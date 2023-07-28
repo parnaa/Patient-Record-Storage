@@ -80,13 +80,13 @@ contract patientRecordStorage{
 
     /// onlyPatient modifier will be used with functions which only a patient himself can execute
     modifier onlyPatient{
-        require(Patient_Record[msg.sender].exists,"Only the patient can change by ownself");
+        require(Patient_Record[msg.sender].exists,"Only the patient can execute");
         _;
     }
 
     ///onlyDoctor modifier will be used with functions, which only a doctor can execute    
     modifier onlyDoctor{
-        require(Doctor_Record[msg.sender].exists,"Only Doctor can change");
+        require(Doctor_Record[msg.sender].exists,"Only Doctor can execute");
         _;
     }
 
@@ -324,14 +324,13 @@ contract patientRecordStorage{
   *
   @param _patient patient's wallet address
   @param _pname patient's name
-  @return _m    array of Medicine
+  @return _m    array of Medicine Ids
 
 */
-  function viewPatientMedicationsByDoctor(address _patient, string memory _pname, uint256 _medid) public view onlyDoctor onlyApprovedPersons(_patient) returns(Medicine memory _m)
+  function viewPatientMedications(address _patient, string memory _pname) public view onlyApprovedPersons(_patient) returns(uint256[] memory _m)
   {
-      require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)),"Input data incorrect");
-      require(Patient_Record[_patient].medications[msg.sender][_medid].exists,"This medication not available");  
-     _m = Patient_Record[_patient].medications[msg.sender][_medid];
+      require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
+     _m = Patient_Record[_patient].medication_list;
   }
 
   /**
@@ -341,11 +340,15 @@ contract patientRecordStorage{
   @return _m    array of Medicine
 
 */
-  function viewSpecificPatientMedicationsByDoctor(address _patient, string memory _pname) public view onlyDoctor onlyApprovedPersons(_patient) returns(uint256[] memory _m)
+  function viewSpecificPatientMedication(address _patient, string memory _pname, uint256 _medid) public view onlyApprovedPersons(_patient) returns(Medicine memory _m)
   {
-      require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)));
-     _m = Patient_Record[_patient].medication_list;
+      
+     require(keccak256(abi.encodePacked(Patient_Record[_patient].name)) == keccak256(abi.encodePacked(_pname)),"Input data incorrect");
+      require(Patient_Record[_patient].medications[msg.sender][_medid].exists,"This medication not available");  
+     _m = Patient_Record[_patient].medications[msg.sender][_medid];
   }
+
+
 
 /**
     @param _medid  Medicine Id
